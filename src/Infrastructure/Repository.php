@@ -233,17 +233,21 @@ implements
         $con = $this->getConnection();
         $stat = $this->executeStatement(
             $con,
-            'SELECT userId, name FROM user WHERE name = ? AND passwordHash = ?',
-            function($s) use ($userName, $pw) {
-                $s->bind_param('ss', $userName, $pw);
+            'SELECT userId, name, passwordHash FROM user WHERE name = ?',
+            function($s) use ($userName) {
+                $s->bind_param('s', $userName);
             }
         );
-        $stat->bind_result($id, $userName);
+        $stat->bind_result($id, $userName, $pwHash);
         if($stat->fetch()) {
-            $user = new \Application\Entities\User($id, $userName);
+            $user = new \Application\Entities\User($id, $userName, $pwHash);
         }
         $stat->close();
         $con->close();
+        if ($user != null) {
+            if (!password_verify($password,$user->getPwHash()))
+                $user = null;
+        }
         return $user;
     }
 
