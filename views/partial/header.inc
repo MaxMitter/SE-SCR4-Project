@@ -11,16 +11,15 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <?php $link('SCR4 Book Shop', 'Home', 'Index', cssClass: 'navbar-brand');?>
+            <?php $link('SCR4 Product Reviews', 'Home', 'Index', cssClass: 'navbar-brand');?>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbar">
                 <nav class="navbar-nav me-auto">
                     <?php $link('Home', 'Home', 'Index', cssClass: 'nav-item nav-link');?>
-                    <?php $link('List', 'Books', 'Index', cssClass: 'nav-item nav-link');?>
-                    <?php $link('Search', 'Books', 'Search', cssClass: 'nav-item nav-link');?>
-                    <?php $link('Checkout', 'Order', 'Create', cssClass: 'nav-item nav-link');?>
+                    <?php $link('List', 'Products', 'Index', cssClass: 'nav-item nav-link');?>
+                    <?php $link('Search', 'Products', 'Search', cssClass: 'nav-item nav-link');?>
                 </nav>
                 <?php $render('partial/user', $data['user']); ?>
             </div>

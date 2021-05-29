@@ -4,20 +4,21 @@
     <nav class="nav nav-pills my-3">
         <?php 
         foreach($data['categories'] as $cat) { ?>
-            <?php $link($cat->getName(), 'Books', 'Index', 
+            <?php $link($cat->getName(), 'Products', 'Index',
             array('cid' => $cat->getId()), 'nav-item nav-link' . ($cat->getId() == $data['selectedCategoryId'] ? ' active' : '')); ?>
         <?php } ?>
     </nav>
 
 <?php if($data['selectedCategoryId'] !== null): ?>
-    <?php if (sizeof($data['books']) > 0) { ?>
+    <?php if (sizeof($data['products']) > 0) { ?>
 
-        <?php $render('partial/books', [
-            'books' => $data['books'],
-            'context' => $data['context']]); ?>
+        <?php $render('partial/products', [
+            'products' => $data['products'],
+            'context' => $data['context'],
+            'breadcrumb' => $data['breadcrumb']]); ?>
 
     <?php } else { ?>
-        <p>No books in this category</p>
+        <p>No products in this category</p>
     <?php } ?>
 <?php else: ?>
     <p>Please select a category</p>

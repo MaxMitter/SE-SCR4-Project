@@ -2,10 +2,10 @@
 <h1>Search result</h1>
 
 <div class="my-3">
-    <?php $beginForm('Books', 'Search'); ?>
+    <?php $beginForm('Products', 'Search'); ?>
         <div class="row g-3">
             <div class="col-auto">
-                <input class="form-control" name="f" ?>
+                <input class="form-control" name="f" />
             </div>
             <div class="col-auto">
                 <button class="btn btn-primary">Search</button>
@@ -14,11 +14,12 @@
     <?php $endForm(); ?>
 </div>
 
-<?php if ($data['books'] !== null): ?>
-    <?php if (sizeof($data['books']) > 0) {
-        $render('partial/books', [
-            'books' => $data['books'],
-            'context' => $data['context']
+<?php if ($data['products'] !== null): ?>
+    <?php if (sizeof($data['products']) > 0) {
+        $render('partial/products', [
+            'products' => $data['products'],
+            'context' => $data['context'],
+            'breadcrumb' => $data['breadcrumb']
         ]);
     } ?>
 <?php endif; ?>

@@ -15,17 +15,22 @@ $sp->register(\Infrastructure\Session::class, isSingleton: true);
 $sp->register(\Application\Interfaces\Session::class, \Infrastructure\Session::class);
 //$sp->register(\Infrastructure\FakeRepository::class, isSingleton: true);
 $sp->register(\Infrastructure\Repository::class, function() {
-    return new \Infrastructure\Repository('localhost', 'root', '', 'bookshop');
+    return new \Infrastructure\Repository('localhost', 'root', '', 'productreviews');
 }, isSingleton: true);
 $sp->register(\Application\Interfaces\CategoryRepository::class, \Infrastructure\Repository::class);
-$sp->register(\Application\Interfaces\BookRepository::class, \Infrastructure\Repository::class);
+$sp->register(\Application\Interfaces\ProductRepository::class, \Infrastructure\Repository::class);
 $sp->register(\Application\Interfaces\UserRepository::class, \Infrastructure\Repository::class);
 $sp->register(\Application\Interfaces\OrderRepository::class, \Infrastructure\Repository::class);
+$sp->register(\Application\Interfaces\ReviewRepository::class, \Infrastructure\Repository::class);
 
 // --- Application
 $sp->register(\Application\CategoriesQuery::class);
-$sp->register(\Application\BooksQuery::class);
-$sp->register(\Application\BookSearchQuery::class);
+$sp->register(\Application\CategoryQuery::class);
+$sp->register(\Application\ProductsQuery::class);
+$sp->register(\Application\ProductQuery::class);
+$sp->register(\Application\UserQuery::class);
+$sp->register(\Application\ReviewByProductQuery::class);
+$sp->register(\Application\ProductSearchQuery::class);
 $sp->register(\Application\AddBookToCartCommand::class);
 $sp->register(\Application\RemoveBookFromCartCommand::class);
 $sp->register(\Application\SignedInUserQuery::class);
@@ -46,7 +51,7 @@ $sp->register(\Presentation\MVC\MVC::class, function() {
 
 // Controllers
 $sp->register(\Presentation\Controllers\Home::class);
-$sp->register(\Presentation\Controllers\Books::class);
+$sp->register(\Presentation\Controllers\Products::class);
 $sp->register(\Presentation\Controllers\Cart::class);
 $sp->register(\Presentation\Controllers\User::class);
 $sp->register(\Presentation\Controllers\Order::class);
