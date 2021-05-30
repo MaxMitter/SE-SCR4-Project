@@ -4,13 +4,12 @@ namespace Application\Entities;
 
 class Product {
     public function __construct(
-        private int $procuctId,
+        private int $productId,
         private string $name,
         private string $info,
-        private string $categoryName,
-        private string $producerName,
+        private int $categoryId,
+        private int $producerId,
         private int $userId,
-        private float $rating
     ) {
 
     }
@@ -18,9 +17,9 @@ class Product {
     /**
      * @return int
      */
-    public function getProcuctId(): int
+    public function getProductId(): int
     {
-        return $this->procuctId;
+        return $this->productId;
     }
 
     /**
@@ -42,17 +41,17 @@ class Product {
     /**
      * @return string
      */
-    public function getCategoryName(): string
+    public function getCategoryId(): int
     {
-        return $this->categoryName;
+        return $this->categoryId;
     }
 
     /**
      * @return string
      */
-    public function getProducerName(): string
+    public function getProducerId(): int
     {
-        return $this->producerName;
+        return $this->producerId;
     }
 
     /**
@@ -61,13 +60,5 @@ class Product {
     public function getUserId(): int
     {
         return $this->userId;
-    }
-
-    /**
-     * @return float
-     */
-    public function getRating(): float
-    {
-        return $this->rating;
     }
 }

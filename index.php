@@ -22,15 +22,18 @@ $sp->register(\Application\Interfaces\ProductRepository::class, \Infrastructure\
 $sp->register(\Application\Interfaces\UserRepository::class, \Infrastructure\Repository::class);
 $sp->register(\Application\Interfaces\OrderRepository::class, \Infrastructure\Repository::class);
 $sp->register(\Application\Interfaces\ReviewRepository::class, \Infrastructure\Repository::class);
+$sp->register(\Application\Interfaces\ProducerRepository::class, \Infrastructure\Repository::class);
 
 // --- Application
 $sp->register(\Application\CategoriesQuery::class);
 $sp->register(\Application\CategoryQuery::class);
 $sp->register(\Application\ProductsQuery::class);
 $sp->register(\Application\ProductQuery::class);
+$sp->register(\Application\ProducerQuery::class);
 $sp->register(\Application\UserQuery::class);
 $sp->register(\Application\ReviewByProductQuery::class);
 $sp->register(\Application\ProductSearchQuery::class);
+$sp->register(\Application\CreateProductQuery::class);
 $sp->register(\Application\AddBookToCartCommand::class);
 $sp->register(\Application\RemoveBookFromCartCommand::class);
 $sp->register(\Application\SignedInUserQuery::class);

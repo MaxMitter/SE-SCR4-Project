@@ -10,7 +10,8 @@ implements
     \Application\Interfaces\CategoryRepository,
     \Application\Interfaces\OrderRepository,
     \Application\Interfaces\UserRepository,
-    \Application\Interfaces\ReviewRepository
+    \Application\Interfaces\ReviewRepository,
+    \Application\Interfaces\ProducerRepository
 {
     private $server;
     private $userName;
@@ -111,9 +112,9 @@ implements
             $con,
             'SELECT productId, p.name, info, c.name, pr.name as producerName, p.userId, AVG(value) as rating
                     FROM product p
-                    INNER JOIN review r USING (productId)
-                    INNER JOIN producer pr USING (producerId)
-                    INNER JOIN category c USING (categoryId)
+                    LEFT OUTER JOIN review r USING (productId)
+                    LEFT OUTER JOIN producer pr USING (producerId)
+                    LEFT OUTER JOIN category c USING (categoryId)
                     WHERE categoryId = ? 
                     GROUP BY productId',
             function ($s) use ($categoryId) {
@@ -123,7 +124,7 @@ implements
         $stat->bind_result($productId, $name, $info, $categoryName, $producerName, $userId, $rating);
 
         while($stat->fetch()) {
-            $products[] = new \Application\Entities\Product($productId, $name, $info, $categoryName, $producerName, $userId, $rating);
+            $products[] = new \Application\ProductData($productId, $name, $info, $categoryName, $producerName, $userId, ($rating != null) ? $rating : 0.0);
         }
         $stat->close();
         $con->close();
@@ -142,9 +143,9 @@ implements
                 $con,
                 'SELECT productId, p.name, info, c.name, pr.name as producerName, p.userId, AVG(value) as rating
                         FROM product p
-                        INNER JOIN review r USING (productId)
-                        INNER JOIN producer pr USING (producerId)
-                        INNER JOIN category c USING (categoryId)
+                        LEFT OUTER JOIN review r USING (productId)
+                        LEFT OUTER JOIN producer pr USING (producerId)
+                        LEFT OUTER JOIN category c USING (categoryId)
                         GROUP BY productId',
                 function ($s) use ($filter) { }
             );
@@ -154,10 +155,10 @@ implements
                 $con,
                 'SELECT productId, p.name, info, c.name, pr.name as producerName, p.userId, AVG(value) as rating
                         FROM product p
-                        INNER JOIN review r USING (productId)
-                        INNER JOIN producer pr USING (producerId)
-                        INNER JOIN category c USING (categoryId)
-                        WHERE p.name LIKE ? OR p.info LIKE ?
+                        LEFT OUTER JOIN review r USING (productId)
+                        LEFT OUTER JOIN producer pr USING (producerId)
+                        LEFT OUTER JOIN category c USING (categoryId)
+                        WHERE p.name LIKE ? OR pr.name LIKE ?
                         GROUP BY productId',
                 function ($s) use ($filterSql) {
                     $s->bind_param('ss', $filterSql, $filterSql);
@@ -167,7 +168,7 @@ implements
         $stat->bind_result($productId, $name, $info, $categoryName, $producerName, $userId, $rating);
 
         while($stat->fetch()) {
-            $products[] = new \Application\Entities\Product($productId, $name, $info, $categoryName, $producerName, $userId, $rating);
+            $products[] = new \Application\ProductData($productId, $name, $info, $categoryName, $producerName, $userId, ($rating != null) ? $rating : 0.0);
         }
         $stat->close();
         $con->close();
@@ -185,9 +186,9 @@ implements
             $con,
             'SELECT productId, p.name, info, c.name, pr.name as producerName, p.userId, AVG(value) as rating
                     FROM product p
-                    INNER JOIN review r USING (productId)
-                    INNER JOIN producer pr USING (producerId)
-                    INNER JOIN category c USING (categoryId)
+                    LEFT OUTER JOIN review r USING (productId)
+                    LEFT OUTER JOIN producer pr USING (producerId)
+                    LEFT OUTER JOIN category c USING (categoryId)
                     WHERE productId = ? 
                     GROUP BY productId',
             function ($s) use ($productId) {
@@ -197,7 +198,7 @@ implements
         $stat->bind_result($productId, $name, $info, $categoryName, $producerName, $userId, $rating);
 
         while($stat->fetch()) {
-            $products[] = new \Application\Entities\Product($productId, $name, $info, $categoryName, $producerName, $userId, $rating);
+            $products[] = new \Application\ProductData($productId, $name, $info, $categoryName, $producerName, $userId, ($rating != null) ? $rating : 0.0);
         }
         $stat->close();
         $con->close();
@@ -205,6 +206,32 @@ implements
         return $products;
     }
 
+    public function createProduct(\Application\Entities\Product $product): int
+    {
+        $con = $this->getConnection();
+        $con->autocommit(false);
+
+        $name = $product->getName();
+        $info = $product->getInfo();
+        $producerId = $product->getProducerId();
+        $categoryId = $product->getCategoryId();
+        $userId = $product->getUserId();
+
+        $stat = $this->executeStatement(
+            $con,
+            'INSERT INTO product (name, info, producerId, categoryId, userId) VALUES (?, ?, ?, ?, ?)',
+            function ($s) use ($name, $info, $producerId, $categoryId, $userId) {
+                $s->bind_param('ssiii', $name, $info, $producerId, $categoryId, $userId);
+            }
+        );
+
+        $productId = $stat->insert_id;
+        $stat->close();
+        $con->commit();
+        $con->close();
+
+        return $productId;
+    }
 
     public function getUser(int $id): ?\Application\Entities\User
     {
@@ -293,7 +320,7 @@ implements
 
         $stat = $this->executeStatement(
             $con,
-            'SELECT * FROM review WHERE productId = ?',
+            'SELECT * FROM review WHERE productId = ? ORDER BY date DESC',
             function ($s) use ($productId) {
                 $s->bind_param('i', $productId);
             }
@@ -333,5 +360,21 @@ implements
         return $reviews;
     }
 
+    public function getAllProducers(): array
+    {
+        $producers = [];
+        $con = $this->getConnection();
+
+        $res = $this->executeQuery($con, 'SELECT producerId, name FROM producer');
+
+        while($cat = $res->fetch_object()) {
+            $producers[] = new \Application\Entities\Producer($cat->producerId, $cat->name);
+        }
+
+        $res->close();
+        $con->close();
+
+        return $producers;
+    }
 
 }

@@ -1,5 +1,6 @@
+<?php if (isset($data['breadcrumb'])): ?>
 <a href="<?php $htmlOut($data['breadcrumb']); ?>"> &#60; Back</a>
-
+<?php endif; ?>
 <h1><?php $htmlOut($data['product']->getName()); ?></h1>
 
 <h5>Category: <?php $htmlOut($data['product']->getCategoryName()); ?> | created by: <?php $htmlOut($data['userName']); ?></h5>

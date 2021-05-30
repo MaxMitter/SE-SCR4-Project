@@ -20,6 +20,9 @@
                     <?php $link('Home', 'Home', 'Index', cssClass: 'nav-item nav-link');?>
                     <?php $link('List', 'Products', 'Index', cssClass: 'nav-item nav-link');?>
                     <?php $link('Search', 'Products', 'Search', cssClass: 'nav-item nav-link');?>
+                    <?php if (isset($data['user'])): ?>
+                    <?php $link('New Product', 'Products', 'NewProduct', cssClass: 'nav-item nav-link'); ?>
+                    <?php endif; ?>
                 </nav>
                 <?php $render('partial/user', $data['user']); ?>
             </div>
