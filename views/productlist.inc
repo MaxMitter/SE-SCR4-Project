@@ -14,8 +14,7 @@
 
         <?php $render('partial/products', [
             'products' => $data['products'],
-            'context' => $data['context'],
-            'breadcrumb' => $data['breadcrumb']]); ?>
+            'context' => $data['context']]); ?>
 
     <?php } else { ?>
         <p>No products in this category</p>

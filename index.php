@@ -32,6 +32,7 @@ $sp->register(\Application\ProductQuery::class);
 $sp->register(\Application\ProducerQuery::class);
 $sp->register(\Application\UserQuery::class);
 $sp->register(\Application\ReviewByProductQuery::class);
+$sp->register(\Application\CreateReviewCommand::class);
 $sp->register(\Application\ProductSearchQuery::class);
 $sp->register(\Application\CreateProductQuery::class);
 $sp->register(\Application\AddBookToCartCommand::class);
@@ -39,6 +40,7 @@ $sp->register(\Application\RemoveBookFromCartCommand::class);
 $sp->register(\Application\SignedInUserQuery::class);
 $sp->register(\Application\SignInCommand::class);
 $sp->register(\Application\SignOutCommand::class);
+$sp->register(\Application\RegisterCommand::class);
 $sp->register(\Application\CartSizeQuery::class);
 $sp->register(\Application\CheckOutCommand::class);
 
@@ -58,6 +60,7 @@ $sp->register(\Presentation\Controllers\Products::class);
 $sp->register(\Presentation\Controllers\Cart::class);
 $sp->register(\Presentation\Controllers\User::class);
 $sp->register(\Presentation\Controllers\Order::class);
+$sp->register(\Presentation\Controllers\Review::class);
 
 // --- handle Request
 $sp->resolve(\Presentation\MVC\MVC::class)->handleRequest($sp);

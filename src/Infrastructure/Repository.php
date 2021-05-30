@@ -278,6 +278,45 @@ implements
         return $user;
     }
 
+    public function createNewUser(string $userName, string $password): ?\Application\Entities\User
+    {
+        $con = $this->getConnection();
+        $con->autocommit(false);
+
+        $exists = $this->executeStatement(
+            $con,
+            'SELECT userId, name FROM user WHERE name = ?',
+            function($s) use ($userName) {
+                $s->bind_param('s', $userName);
+            }
+        );
+        $exists->bind_result($id, $userName);
+        if($exists->fetch()) {
+            $user = new \Application\Entities\User($id, $userName);
+        }
+
+        if ($user != null) {
+            return null;
+        }
+
+        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+
+        $stat = $this->executeStatement(
+            $con,
+            'INSERT INTO user (name, passwordHash) VALUES (?, ?)',
+            function ($s) use ($userName, $passwordHash) {
+                $s->bind_param('ss', $userName, $passwordHash);
+            }
+        );
+
+        $userId = $stat->insert_id;
+        $stat->close();
+        $con->commit();
+        $con->close();
+
+        return $this->getUser($userId);
+    }
+
     public function createOrder(int $userId, array $bookIdsWithCount, string $creditCardName, string $creditCardNumber): ?int
     {
         $con = $this->getConnection();
@@ -358,6 +397,27 @@ implements
         $con->close();
 
         return $reviews;
+    }
+
+    public function createReview(string $text, int $rating, int $productId, int $userId): int
+    {
+        $con = $this->getConnection();
+        $con->autocommit(false);
+
+        $stat = $this->executeStatement(
+            $con,
+            'INSERT INTO review (userId, productId, text, value) VALUES (?, ?, ?, ?)',
+            function ($s) use ($userId, $productId, $text, $rating) {
+                $s->bind_param('iisi', $userId, $productId, $text, $rating);
+            }
+        );
+
+        $reviewId = $stat->insert_id;
+        $stat->close();
+        $con->commit();
+        $con->close();
+
+        return $reviewId;
     }
 
     public function getAllProducers(): array

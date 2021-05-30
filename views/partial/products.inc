@@ -12,7 +12,7 @@
     <tbody>
         <?php foreach ($data['products'] as $b): ?>
             <tr>
-                <td><?php $link($b->getName(), 'Products', 'Product', array('pid' => $b->getProductId(), 'brcr' => $data['context']), 'nav-item nav-link') ?></td>
+                <td><?php $link($b->getName(), 'Products', 'Product', array('pid' => $b->getProductId()), 'nav-item nav-link') ?></td>
                 <td><?php $htmlOut($b->getInfo()); ?></td>
                 <td><?php $htmlOut($b->getProducerName()); ?></td>
                 <td align="center"><?php

@@ -18,8 +18,7 @@
     <?php if (sizeof($data['products']) > 0) {
         $render('partial/products', [
             'products' => $data['products'],
-            'context' => $data['context'],
-            'breadcrumb' => $data['breadcrumb']
+            'context' => $data['context']
         ]);
     } ?>
 <?php endif; ?>

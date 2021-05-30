@@ -8,13 +8,13 @@ class Products extends \Presentation\MVC\Controller {
     const PARAM_CATEGORY_ID = 'cid';
     const PARAM_PRODUCT_ID = 'pid';
     const PARAM_FILTER = 'f';
-    const PARAM_BREAKCRUMB = 'brcr';
 
     //Param for creation
     const PARAM_CREATE_NAME = 'cname';
     const PARAM_CREATE_INFO = 'cinfo';
     const PARAM_CREATE_PRODUCER = 'cproducer';
     const PARAM_CREATE_CATEGORY = 'ccategory';
+    const PARAM_CREATE_ERROR = 'cerr';
 
     public function __construct(
         private \Application\CategoriesQuery $categoriesQuery,
@@ -36,7 +36,6 @@ class Products extends \Presentation\MVC\Controller {
             'selectedCategoryId' => $this->tryGetParam(self::PARAM_CATEGORY_ID, $value) ? $value : null,
             'products' => $this->tryGetParam(self::PARAM_CATEGORY_ID, $value) ? $this->productsQuery->execute($value) : null,
             'context' => $this->getRequestUri(),
-            'breadcrumb' => $this->tryGetParam(self::PARAM_BREAKCRUMB, $value) ? $value : null,
             'user' => $this->signedInUserQuery->execute()
         ]);
     }
@@ -44,7 +43,6 @@ class Products extends \Presentation\MVC\Controller {
     public function GET_Product(): \Presentation\MVC\ActionResult {
         $product = $this->tryGetParam(self::PARAM_PRODUCT_ID, $value) ? $this->productQuery->execute($value) : null;
         $user = $this->userQuery->execute($product[0]->getUserId());
-        $reviews = $this->reviewQuery->execute($product[0]->getProductId());
         $reviewArray = $this->getReviewsInArray($product[0]->getProductId());
 
         return $this->view('productView', [
@@ -52,8 +50,8 @@ class Products extends \Presentation\MVC\Controller {
             'userName' => $user->getUserName(),
             'reviews' => $reviewArray,
             'context' => $this->getRequestUri(),
-            'breadcrumb' => $this->tryGetParam(self::PARAM_BREAKCRUMB, $value) ? $value : null,
-            'user' => $this->signedInUserQuery->execute()
+            'user' => $this->signedInUserQuery->execute(),
+            'errors' => [$this->tryGetParam(self::PARAM_CREATE_ERROR, $value) ? $value : null]
         ]);
     }
 
@@ -64,7 +62,6 @@ class Products extends \Presentation\MVC\Controller {
             'products' => $products,
             'filter' => $this->tryGetParam(self::PARAM_FILTER, $value) ? $value : null,
             'context' => $this->getRequestUri(),
-            'breadcrumb' => $this->tryGetParam(self::PARAM_BREAKCRUMB, $value) ? $value : null,
             'user' => $this->signedInUserQuery->execute()
         ]);
     }
@@ -88,7 +85,6 @@ class Products extends \Presentation\MVC\Controller {
         $user = $this->signedInUserQuery->execute();
 
         $newProduct = new \Application\Entities\Product(-1, $name, $info, $categoryId, $producerId, $user->getId());
-        var_dump($newProduct);
         $productId = $this->createProductQuery->execute($newProduct);
 
         return $this->redirect('Products', 'Product', array('pid' => $productId));
