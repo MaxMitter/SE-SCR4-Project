@@ -110,7 +110,7 @@ implements
 
         $stat = $this->executeStatement(
             $con,
-            'SELECT productId, p.name, info, c.name, pr.name as producerName, p.userId, AVG(value) as rating
+            'SELECT productId, p.name, info, c.name, pr.name as producerName, p.userId, ROUND(AVG(value), 2) as rating
                     FROM product p
                     LEFT OUTER JOIN review r USING (productId)
                     LEFT OUTER JOIN producer pr USING (producerId)
@@ -141,7 +141,7 @@ implements
         if ($filter == '') {
             $stat = $this->executeStatement(
                 $con,
-                'SELECT productId, p.name, info, c.name, pr.name as producerName, p.userId, AVG(value) as rating
+                'SELECT productId, p.name, info, c.name, pr.name as producerName, p.userId, ROUND(AVG(value), 2) as rating
                         FROM product p
                         LEFT OUTER JOIN review r USING (productId)
                         LEFT OUTER JOIN producer pr USING (producerId)
@@ -153,7 +153,7 @@ implements
             $filterSql = "%$filter%";
             $stat = $this->executeStatement(
                 $con,
-                'SELECT productId, p.name, info, c.name, pr.name as producerName, p.userId, AVG(value) as rating
+                'SELECT productId, p.name, info, c.name, pr.name as producerName, p.userId, ROUND(AVG(value), 2) as rating
                         FROM product p
                         LEFT OUTER JOIN review r USING (productId)
                         LEFT OUTER JOIN producer pr USING (producerId)
@@ -231,6 +231,49 @@ implements
         $con->close();
 
         return $productId;
+    }
+
+    public function editProduct(int $productId, string $name, string $info, int $producerId, int $categoryId): int
+    {
+        $con = $this->getConnection();
+        $con->autocommit(false);
+
+        $stat = $this->executeStatement(
+            $con,
+            'UPDATE product 
+                    SET name = ?,
+                    info = ?,
+                    producerId = ?,
+                    categoryId = ?
+                    WHERE productId = ?',
+            function ($s) use ($name, $info, $producerId, $categoryId, $productId) {
+                $s->bind_param('ssiii', $name, $info, $producerId, $categoryId, $productId);
+            }
+        );
+
+        $stat->close();
+        $con->commit();
+        $con->close();
+
+        return $productId;
+    }
+
+    public function deleteProduct(int $productId)
+    {
+        $con = $this->getConnection();
+        $con->autocommit(false);
+
+        $stat = $this->executeStatement(
+            $con,
+            'DELETE FROM product WHERE productId = ?',
+            function ($s) use ($productId) {
+                $s->bind_param('i', $productId);
+            }
+        );
+
+        $stat->close();
+        $con->commit();
+        $con->close();
     }
 
     public function getUser(int $id): ?\Application\Entities\User
@@ -418,6 +461,76 @@ implements
         $con->close();
 
         return $reviewId;
+    }
+
+    public function editReview(int $id, string $text, int $rating): int
+    {
+        $con = $this->getConnection();
+        $con->autocommit(false);
+
+        $stat = $this->executeStatement(
+            $con,
+            'UPDATE review SET text = ?, value = ? WHERE reviewId = ?',
+            function ($s) use ($text, $rating, $id) {
+                $s->bind_param('sii', $text, $rating, $id);
+            }
+        );
+
+        $stat->close();
+        $con->commit();
+
+        $getProduct = $this->executeStatement(
+            $con,
+            'SELECT productId FROM review WHERE reviewId = ?',
+            function ($s) use ($id) {
+                $s->bind_param('i', $id);
+            }
+        );
+
+        $productId = null;
+        $getProduct->bind_result($pid);
+        if($getProduct->fetch()) {
+            $productId = $pid;
+        }
+
+        $getProduct->close();
+        $con->close();
+
+        return $productId;
+    }
+
+    public function deleteReview(int $reviewId): int
+    {
+        $con = $this->getConnection();
+        $con->autocommit(false);
+
+        $getProductId = $this->executeStatement(
+            $con,
+            'SELECT productId FROM review WHERE reviewId = ?',
+            function ($s) use ($reviewId) {
+                $s->bind_param('i', $reviewId);
+            }
+        );
+        $getProductId->bind_result($product);
+
+        if($getProductId->fetch()) {
+            $productId = $product;
+        }
+
+        $getProductId->close();
+
+        $stat = $this->executeStatement(
+            $con,
+            'DELETE FROM review WHERE productId = ?',
+            function ($s) use ($productId) {
+                $s->bind_param('i', $productId);
+            }
+        );
+
+        $stat->close();
+        $con->commit();
+        $con->close();
+        return $productId;
     }
 
     public function getAllProducers(): array

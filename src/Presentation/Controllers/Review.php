@@ -8,8 +8,15 @@ class Review extends \Presentation\MVC\Controller {
     const PARAM_CREATE_PRODUCTID = 'cproductId';
     const PARAM_CREATE_USERID = 'cuserId';
 
+    //edit params
+    const PARAM_EDIT_ID = 'eid';
+    const PARAM_EDIT_TEXT = 'etext';
+    const PARAM_EDIT_RATING = 'erating';
+
     public function __construct(
-        private \Application\CreateReviewCommand $createReviewCommand
+        private \Application\CreateReviewCommand $createReviewCommand,
+        private \Application\EditReviewCommand $editReviewCommand,
+        private \Application\DeleteReviewCommand $deleteReviewCommand
     ) { }
 
     public function GET_NewReview() : \Presentation\MVC\ActionResult {
@@ -23,5 +30,22 @@ class Review extends \Presentation\MVC\Controller {
         } else {
             return $this->redirect('Products', 'Product', array('pid' => $productId));
         }
+    }
+
+    public function GET_Edit() : \Presentation\MVC\ActionResult {
+        $id = $this->getParam(self::PARAM_EDIT_ID);
+        $text = $this->getParam(self::PARAM_EDIT_TEXT);
+        $rating = $this->getParam(self::PARAM_EDIT_RATING);
+        $productId = $this->editReviewCommand->execute($id, $text, $rating);
+
+        return $this->redirect('Products', 'Product', array('pid' => $productId));
+    }
+
+    public function GET_Delete(): \Presentation\MVC\ActionResult {
+        $rId = $this->getParam(self::PARAM_EDIT_ID);
+
+        $productId = $this->deleteReviewCommand->execute($rId);
+
+        return $this->redirect('Products', 'Product', array('pid' => $productId));
     }
 }
