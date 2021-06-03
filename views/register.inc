@@ -16,7 +16,7 @@
             <p style="color: #bb2d3b"><?php $htmlOut($data['errors'][0]); ?></p>
         <?php endif; ?>
     </div>
-    <button class="btn btn-primary">Log in</button>
+    <button class="btn btn-primary">Register</button>
 <?php $endForm(); ?>
 
 <?php $render('partial/footer', $data); ?>

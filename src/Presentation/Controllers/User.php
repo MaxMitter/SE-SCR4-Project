@@ -49,7 +49,6 @@ class User extends \Presentation\MVC\Controller {
     }
 
     public function POST_Register(): \Presentation\MVC\ActionResult {
-        $name = $this->getParam(self::PARAM_USER_NAME);
         $pw1 = $this->getParam(self::PARAM_PASSWORD);
         $pw2 = $this->getParam(self::PARAM_PASSWORD2);
 

@@ -8,7 +8,6 @@ class Repository
 implements
     \Application\Interfaces\ProductRepository,
     \Application\Interfaces\CategoryRepository,
-    \Application\Interfaces\OrderRepository,
     \Application\Interfaces\UserRepository,
     \Application\Interfaces\ReviewRepository,
     \Application\Interfaces\ProducerRepository
@@ -521,9 +520,9 @@ implements
 
         $stat = $this->executeStatement(
             $con,
-            'DELETE FROM review WHERE productId = ?',
-            function ($s) use ($productId) {
-                $s->bind_param('i', $productId);
+            'DELETE FROM review WHERE reviewId = ?',
+            function ($s) use ($reviewId) {
+                $s->bind_param('i', $reviewId);
             }
         );
 
@@ -549,5 +548,4 @@ implements
 
         return $producers;
     }
-
 }

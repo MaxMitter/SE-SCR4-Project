@@ -2,12 +2,12 @@
 
 namespace Application;
 
-class CreateProductQuery {
+class CreateProductCommand {
     public function __construct(
         private Interfaces\ProductRepository $productRepository
     ) { }
 
-    public function execute(\Application\Entities\Product $product) {
+    public function execute(\Application\Entities\Product $product):int {
         return $this->productRepository->createProduct($product);
     }
 }

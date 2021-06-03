@@ -23,6 +23,4 @@ class ProducerData {
     {
         return $this->name;
     }
-
-
 }

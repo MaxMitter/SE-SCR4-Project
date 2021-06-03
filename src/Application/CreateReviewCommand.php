@@ -12,7 +12,6 @@ class CreateReviewCommand {
         if ($reviewId != null) {
             return true;
         }
-
         return false;
     }
 }

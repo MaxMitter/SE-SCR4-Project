@@ -1,5 +1,5 @@
 <?php $render('partial/header', $data); ?>
-    <h1>List of books</h1>
+    <h1>List of products</h1>
     
     <nav class="nav nav-pills my-3">
         <?php 

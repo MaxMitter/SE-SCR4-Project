@@ -32,7 +32,10 @@ final class ServiceProvider
         // look up service descriptor
         $sd = $this->serviceDescriptors[$serviceType] ?? null;
         if ($sd === null) {
-            throw new \Exception("Service '{$serviceType}' not registered for dependency injection.");
+            //throw new \Exception("Service '{$serviceType}' not registered for dependency injection.");
+            http_response_code(404);
+            include('views/404.html');
+            die();
         }
         // check for existing instance
         $instance = $this->instances[$sd[self::SERVICE_TYPE]] ?? null;

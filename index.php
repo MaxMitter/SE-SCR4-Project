@@ -13,14 +13,12 @@ $sp = new \ServiceProvider();
 // --- Infrastructure
 $sp->register(\Infrastructure\Session::class, isSingleton: true);
 $sp->register(\Application\Interfaces\Session::class, \Infrastructure\Session::class);
-//$sp->register(\Infrastructure\FakeRepository::class, isSingleton: true);
 $sp->register(\Infrastructure\Repository::class, function() {
     return new \Infrastructure\Repository('localhost', 'root', '', 'productreviews');
 }, isSingleton: true);
 $sp->register(\Application\Interfaces\CategoryRepository::class, \Infrastructure\Repository::class);
 $sp->register(\Application\Interfaces\ProductRepository::class, \Infrastructure\Repository::class);
 $sp->register(\Application\Interfaces\UserRepository::class, \Infrastructure\Repository::class);
-$sp->register(\Application\Interfaces\OrderRepository::class, \Infrastructure\Repository::class);
 $sp->register(\Application\Interfaces\ReviewRepository::class, \Infrastructure\Repository::class);
 $sp->register(\Application\Interfaces\ProducerRepository::class, \Infrastructure\Repository::class);
 
@@ -36,20 +34,15 @@ $sp->register(\Application\CreateReviewCommand::class);
 $sp->register(\Application\EditReviewCommand::class);
 $sp->register(\Application\DeleteReviewCommand::class);
 $sp->register(\Application\ProductSearchQuery::class);
-$sp->register(\Application\CreateProductQuery::class);
+$sp->register(\Application\CreateProductCommand::class);
 $sp->register(\Application\DeleteProductCommand::class);
 $sp->register(\Application\EditProductCommand::class);
-$sp->register(\Application\AddBookToCartCommand::class);
-$sp->register(\Application\RemoveBookFromCartCommand::class);
 $sp->register(\Application\SignedInUserQuery::class);
 $sp->register(\Application\SignInCommand::class);
 $sp->register(\Application\SignOutCommand::class);
 $sp->register(\Application\RegisterCommand::class);
-$sp->register(\Application\CartSizeQuery::class);
-$sp->register(\Application\CheckOutCommand::class);
 
 // --- Services
-$sp->register(\Application\Services\CartService::class);
 $sp->register(\Application\Services\AuthenticationService::class);
 
 // --- Presentation
@@ -61,9 +54,7 @@ $sp->register(\Presentation\MVC\MVC::class, function() {
 // Controllers
 $sp->register(\Presentation\Controllers\Home::class);
 $sp->register(\Presentation\Controllers\Products::class);
-$sp->register(\Presentation\Controllers\Cart::class);
 $sp->register(\Presentation\Controllers\User::class);
-$sp->register(\Presentation\Controllers\Order::class);
 $sp->register(\Presentation\Controllers\Review::class);
 
 // --- handle Request

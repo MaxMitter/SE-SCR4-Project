@@ -2,8 +2,6 @@
 
 namespace Presentation\Controllers;
 
-use Application\CategoryQuery;
-
 class Products extends \Presentation\MVC\Controller {
     const PARAM_CATEGORY_ID = 'cid';
     const PARAM_PRODUCT_ID = 'pid';
@@ -26,7 +24,7 @@ class Products extends \Presentation\MVC\Controller {
         private \Application\ReviewByProductQuery $reviewQuery,
         private \Application\SignedInUserQuery $signedInUserQuery,
         private \Application\ProducerQuery $producerQuery,
-        private \Application\CreateProductQuery $createProductQuery,
+        private \Application\CreateProductCommand $createProductQuery,
         private \Application\EditProductCommand $editProductCommand,
         private \Application\DeleteProductCommand $deleteProductCommand
     ) {

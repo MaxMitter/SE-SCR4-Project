@@ -7,8 +7,7 @@ class UserData
     public function __construct(
         private int $id,
         private string $userName
-    ) {
-    }
+    ) { }
 
     public function getId(): int
     {
