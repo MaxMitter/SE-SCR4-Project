@@ -13,11 +13,11 @@
             ?>
             <div class="mb-3">
                 <label for="cname" class="form-label">Product name:</label>
-                <input type="text" class="form-control" placeholder="Name" name="cname" id="cname" value="<?php if (isset($data['name'])) echo $data['name']; ?>" required />
+                <input type="text" class="form-control" placeholder="Name" name="cname" id="cname" value="<?php if (isset($data['name'])) $htmlOut($data['name']); ?>" required />
             </div>
             <div class="mb-3">
                 <label for="cinfo" class="form-label">Product info:</label>
-                <textarea class="form-control" rows="3" id="cinfo" name="cinfo"><?php if (isset($data['info'])) echo $data['info']; else echo ''; ?></textarea>
+                <textarea class="form-control" rows="3" id="cinfo" name="cinfo"><?php if (isset($data['info'])) $htmlOut($data['info']); else echo ''; ?></textarea>
             </div>
             <div class="mb-3">
                 <div class="row">
